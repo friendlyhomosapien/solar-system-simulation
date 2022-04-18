@@ -53,18 +53,22 @@ const light = CreateLight();
 const stars = new CreateStars();
 
 const sunMesh = new CreateSphere(1, 150, 150, .005).createShaderMesh(SunTexture, SunCloudTexture);
+const sunSelectMesh = new CreateSphere(1.05, 150, 150, .005).createPoints(0.01);
 
 const mercuryMesh = new CreateSphere(.025, 20, 20).createMesh(MercuryTexture);
 const venusMesh = new CreateSphere(.05, 20, 20).createMesh(VenusSurfaceTexture);
 const earthMesh = new CreateSphere(.1, 20, 20).createMesh(EarthDayTexture);
 const marsMesh = new CreateSphere(.08, 20, 20).createMesh(MarsTexture);
 
+
 const solarObjects = new THREE.Group();
 solarObjects.add(mercuryMesh);
 solarObjects.add(venusMesh);
 solarObjects.add(earthMesh);
 solarObjects.add(marsMesh);
+
 solarObjects.add(sunMesh);
+solarObjects.add(sunSelectMesh);
 
 const renderModel = new RenderPass(scene, camera);
 const effectBloom = new BloomPass(1.25);
@@ -74,6 +78,8 @@ const composer = new EffectComposer(renderer);
 composer.addPass(renderModel);
 composer.addPass(effectBloom);
 composer.addPass(effectFilm);
+
+const raycaster = new THREE.Raycaster();
 
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true;
@@ -126,8 +132,8 @@ function init() {
     })
 
     const updateMouse = (e) => {
-        mouseY = e.clientY;
-        mouseX = e.clientX;
+        mouseX = ( e.clientX / window.innerWidth ) * 2 - 1;
+        mouseY = - ( e.clientY / window.innerHeight ) * 2 + 1;
     }
 
     document.addEventListener('mousemove', updateMouse)
@@ -186,9 +192,30 @@ const clock = new THREE.Clock()
 stars.rotation.y = (mouseX + clock.getElapsedTime()) / 1000;
 stars.rotation.x = (mouseY + clock.getElapsedTime()) / 1000;
 
+const selected = {
+    sun: false
+};
+
 function animate() {
     const delta = 5 * clock.getDelta();
     const elapsedTime = clock.getElapsedTime()
+    const intersectSun = raycaster.intersectObject(sunMesh);
+    raycaster.setFromCamera( {
+        x: mouseX,
+        y: mouseY
+    }, camera );
+
+    if ( intersectSun.length > 0 ) {
+        document.body.addEventListener('click', () => {
+            selected.sun = true;
+            sunSelectMesh.visible = true;
+        });
+    } else {
+        document.body.addEventListener('click', () => {
+            selected.sun = false;
+            sunSelectMesh.visible = false;
+        });
+    }
 
     sunMesh.rotation.y = .05 * elapsedTime
     sunMesh.material.uniforms[ 'time' ].value += 0.2 * delta;
@@ -210,8 +237,8 @@ function animate() {
     marsMesh.rotation.z = elapsedTime / 100;
     marsMesh.rotation.z = elapsedTime / 100;
 
-    stars.rotation.y = (mouseX + elapsedTime * 50) / 10000;
-    stars.rotation.x = (mouseY + elapsedTime) / 10000;
+    stars.rotation.y = (mouseX * 100 + elapsedTime * 50) / 10000;
+    stars.rotation.x = (mouseY * 100 + elapsedTime) / 10000;
 
     controls.update()
 

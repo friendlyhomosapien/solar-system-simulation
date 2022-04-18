@@ -2,6 +2,8 @@ import {
     SphereGeometry,
     Mesh,
     MeshBasicMaterial,
+    PointsMaterial,
+    Points,
     TextureLoader,
     ShaderMaterial,
     Vector3,
@@ -14,6 +16,19 @@ export default class {
 
     constructor(radius = 1, segX = 32, segY = 32) {
         this.geometry = new SphereGeometry( radius, segX, segY );
+    }
+
+    createPoints(pointSize = .001, color = 0xffffff) {
+        const options = {
+            size: pointSize,
+            color: color
+        };
+    
+        // Materials
+        this.material = new PointsMaterial(options);
+    
+        // Mesh
+        return new Points(this.geometry, this.material);
     }
 
     createMesh(texture = null, color = null) {
