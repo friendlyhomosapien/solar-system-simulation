@@ -29,10 +29,16 @@ const sizes = {
     height: window.innerHeight
 }
 
-let mouseY = 0;
-let mouseX = 0;
+let pointer = {
+    x: 0,
+    y: 0
+}
+let pointerClick = {
+    x: (0 / window.innerWidth ) * 2 - 1,
+    y: - (0 / window.innerHeight ) * 2 + 1
+}
 
-const canvas = document.querySelector('canvas#app');
+const canvas = document.querySelector('canvas#webgl');
 
 const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2( 0x000000, 0.001 );
@@ -52,23 +58,84 @@ const light = CreateLight();
 
 const stars = new CreateStars();
 
-const sunMesh = new CreateSphere(1, 150, 150, .005).createShaderMesh(SunTexture, SunCloudTexture);
-const sunSelectMesh = new CreateSphere(1.05, 150, 150, .005).createPoints(0.01);
+const mesh = {
+    sun: {
+        normal: null,
+        select: null
+    },
+    mercury: {
+        normal: null,
+        select: null
+    },
+    venus: {
+        normal: null,
+        select: null
+    },
+    earth: {
+        normal: null,
+        select: null
+    },
+    mars: {
+        normal: null,
+        select: null
+    },
+};
 
-const mercuryMesh = new CreateSphere(.025, 20, 20).createMesh(MercuryTexture);
-const venusMesh = new CreateSphere(.05, 20, 20).createMesh(VenusSurfaceTexture);
-const earthMesh = new CreateSphere(.1, 20, 20).createMesh(EarthDayTexture);
-const marsMesh = new CreateSphere(.08, 20, 20).createMesh(MarsTexture);
+mesh.sun.normal = new CreateSphere(1, 100, 100, .005)
+    .createShaderMesh(SunTexture, SunCloudTexture);
+mesh.sun.select = new CreateSphere(1.005, 100, 100, .005)
+    .createPoints(.025);
+const sunMeshGroup = new THREE.Group();
+sunMeshGroup.add(mesh.sun.normal);
+sunMeshGroup.add(mesh.sun.select);
 
+mesh.mercury.normal = new CreateSphere(.025, 20, 20)
+    .createMesh(MercuryTexture);
+mesh.mercury.select = new CreateSphere(.0255, 20, 20)
+    .createPoints(0.01);
+const mercuryMeshGroup = new THREE.Group();
+    mercuryMeshGroup.add(mesh.mercury.normal);
+    mercuryMeshGroup.add(mesh.mercury.select);
+mercuryMeshGroup.position.x = 1.4;
 
-const solarObjects = new THREE.Group();
-solarObjects.add(mercuryMesh);
-solarObjects.add(venusMesh);
-solarObjects.add(earthMesh);
-solarObjects.add(marsMesh);
+mesh.venus.normal = new CreateSphere(.05, 20, 20)
+    .createMesh(VenusSurfaceTexture);
+mesh.venus.select = new CreateSphere(.0505, 20, 20)
+    .createPoints(0.01);
+const venusMeshGroup = new THREE.Group();
+    venusMeshGroup.add(mesh.venus.normal);
+    venusMeshGroup.add(mesh.venus.select);
+venusMeshGroup.position.x = 1.8;
 
-solarObjects.add(sunMesh);
-solarObjects.add(sunSelectMesh);
+mesh.earth.normal = new CreateSphere(.1, 20, 20)
+    .createMesh(EarthDayTexture);
+mesh.earth.select = new CreateSphere(.1005, 20, 20)
+    .createPoints(0.01);
+const earthMeshGroup = new THREE.Group();
+    earthMeshGroup.add(mesh.earth.normal);
+    earthMeshGroup.add(mesh.earth.select);
+earthMeshGroup.position.x = 2.2;
+
+mesh.mars.normal = new CreateSphere(.08, 20, 20)
+    .createMesh(MarsTexture);
+mesh.mars.select = new CreateSphere(.0805, 20, 20)
+    .createPoints(0.01);
+const marsMeshGroup = new THREE.Group();
+    marsMeshGroup.add(mesh.mars.normal);
+    marsMeshGroup.add(mesh.mars.select);
+
+marsMeshGroup.position.x = 2.6;
+
+// const solarObjects = new THREE.Group();
+// solarObjects.add(mesh.mercury.normal);
+// solarObjects.add(mesh.venus.normal);
+// solarObjects.add(mesh.earth.normal);
+// solarObjects.add(mesh.mars.normal);
+
+// solarObjects.add(mesh.sun.normal);
+// solarObjects.add(mesh.sun.select);
+
+mesh.sun.select.visible = false;
 
 const renderModel = new RenderPass(scene, camera);
 const effectBloom = new BloomPass(1.25);
@@ -89,7 +156,7 @@ function introAnimation() {
         delay: 1,
         duration: 5,
         z: 4.75,
-        // y: 7,
+        y: 7,
         ease: "power2.inOut"
     })
     gsap.to(camera.rotation, {
@@ -98,7 +165,7 @@ function introAnimation() {
         x: -1,
         ease: "power2.inOut"
     })
-    gsap.to(sunMesh.rotation, {
+    gsap.to(mesh.sun.normal.rotation, {
         x: -0.87,
         delay: 1,
         duration: 5,
@@ -114,7 +181,12 @@ function init() {
     scene.add(camera);
     scene.add(light);
     scene.add(stars);
-    scene.add(solarObjects);
+
+    scene.add(sunMeshGroup);
+    scene.add(mercuryMeshGroup);
+    scene.add(venusMeshGroup);
+    scene.add(earthMeshGroup);
+    scene.add(marsMeshGroup);
 
     window.addEventListener('resize', () =>
     {
@@ -131,12 +203,32 @@ function init() {
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     })
 
-    const updateMouse = (e) => {
-        mouseX = ( e.clientX / window.innerWidth ) * 2 - 1;
-        mouseY = - ( e.clientY / window.innerHeight ) * 2 + 1;
+    const updatePointerClick = (e) => {
+        pointerClick.x = ( e.clientX / window.innerWidth ) * 2 - 1;
+        pointerClick.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
     }
 
-    document.addEventListener('mousemove', updateMouse)
+    const updatePointerMove = (e) => {
+        pointer.x = ( e.clientX / window.innerWidth ) * 2 - 1;
+        pointer.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
+        Object.keys(mesh).forEach((key) => {
+            const intersect = raycaster.intersectObject(mesh[key].normal);
+    
+            raycaster.setFromCamera( {
+                x: pointerClick.x,
+                y: pointerClick.y
+            }, camera);
+    
+            if ( intersect.length > 0 ) {
+                mesh[key].select.visible = true;
+            } else {
+                mesh[key].select.visible = false;
+            }
+        })
+    }
+
+    document.addEventListener('mousemove', updatePointerMove)
+    document.body.addEventListener('mouseup', updatePointerClick)
 
     /**
      * Add gui for testing
@@ -149,8 +241,8 @@ function init() {
     
     const lightOptionGUI = gui.addFolder('light options');
     lightOptionGUI.add(light, 'intensity', -5, 5, .01);
-    // lightOptionGUI.add(light, 'distance', -5, 5, .01);
-    // lightOptionGUI.add(light, 'decay', -5, 5, .01);
+    lightOptionGUI.add(light, 'distance', -5, 5, .01);
+    lightOptionGUI.add(light, 'decay', -5, 5, .01);
     
     const cameraPositionGUI = gui.addFolder('camera position');
     cameraPositionGUI.add(camera.position, 'x', -5, 5, 0.01);
@@ -163,9 +255,9 @@ function init() {
     cameraRotationGUI.add(camera.rotation, 'z', -5, 5, 0.01);
     
     const sunRotationGUI = gui.addFolder('sun rotation');
-    sunRotationGUI.add(sunMesh.rotation, 'x', -10, 10, 0.01);
-    sunRotationGUI.add(sunMesh.rotation, 'y', -10, 10, 0.01);
-    sunRotationGUI.add(sunMesh.rotation, 'z', -10, 10, 0.01);
+    sunRotationGUI.add(mesh.sun.normal.rotation, 'x', -10, 10, 0.01);
+    sunRotationGUI.add(mesh.sun.normal.rotation, 'y', -10, 10, 0.01);
+    sunRotationGUI.add(mesh.sun.normal.rotation, 'z', -10, 10, 0.01);
 
     introAnimation();
 }
@@ -189,56 +281,65 @@ function orbitObj(obj, orbitCalc) {
 
 const clock = new THREE.Clock()
 
-stars.rotation.y = (mouseX + clock.getElapsedTime()) / 1000;
-stars.rotation.x = (mouseY + clock.getElapsedTime()) / 1000;
+stars.rotation.y = (pointer.x + clock.getElapsedTime()) / 1000;
+stars.rotation.x = (pointer.y + clock.getElapsedTime()) / 1000;
 
-const selected = {
-    sun: false
-};
+let selectedMesh = null;
+
+function setSelectedMesh(key = null) {
+    if (!key) {
+
+    }
+}
+function setInfoPanelAttribute(key = null) {
+    if (!key) {
+        document.querySelector('#modal').removeAttribute('data-info-panel');
+    } else {
+        document.querySelector('#modal').setAttribute('data-info-panel', key);
+    }
+}
 
 function animate() {
     const delta = 5 * clock.getDelta();
     const elapsedTime = clock.getElapsedTime()
-    const intersectSun = raycaster.intersectObject(sunMesh);
-    raycaster.setFromCamera( {
-        x: mouseX,
-        y: mouseY
-    }, camera );
 
-    if ( intersectSun.length > 0 ) {
-        document.body.addEventListener('click', () => {
-            selected.sun = true;
-            sunSelectMesh.visible = true;
-        });
-    } else {
-        document.body.addEventListener('click', () => {
-            selected.sun = false;
-            sunSelectMesh.visible = false;
-        });
-    }
+    // Object.keys(mesh).forEach((key) => {
+    //     const intersect = raycaster.intersectObject(mesh[key].normal);
 
-    sunMesh.rotation.y = .05 * elapsedTime
-    sunMesh.material.uniforms[ 'time' ].value += 0.2 * delta;
+    //     raycaster.setFromCamera( {
+    //         x: pointerClick.x,
+    //         y: pointerClick.y
+    //     }, camera);
 
-    orbitObj(mercuryMesh, orbitCalc(elapsedTime, 1.4));
-    orbitObj(venusMesh,   orbitCalc(elapsedTime, 1.8));
-    orbitObj(earthMesh,   orbitCalc(elapsedTime, 2.2));
-    orbitObj(marsMesh,    orbitCalc(elapsedTime, 2.6));
+    //     if ( intersect.length > 0 ) {
+    //         mesh[key].select.visible = true;
+    //     } else {
+    //         mesh[key].select.visible = false;
+    //     }
+    // })
 
-    mercuryMesh.rotation.x = elapsedTime / 50;
-    mercuryMesh.rotation.z = elapsedTime / 50;
+    mesh.sun.normal.rotation.y = .05 * elapsedTime
+    mesh.sun.normal.material.uniforms[ 'time' ].value += 0.2 * delta;
 
-    venusMesh.rotation.x = elapsedTime / 100;
-    venusMesh.rotation.z = elapsedTime / 100;
+    orbitObj(mercuryMeshGroup, orbitCalc(elapsedTime, 1.4));
+    orbitObj(venusMeshGroup,   orbitCalc(elapsedTime, 1.8));
+    orbitObj(earthMeshGroup,   orbitCalc(elapsedTime, 2.2));
+    orbitObj(marsMeshGroup,    orbitCalc(elapsedTime, 2.6));
 
-    earthMesh.rotation.x = elapsedTime / 100;
-    earthMesh.rotation.z = elapsedTime / 100;
+    mesh.mercury.normal.rotation.x = elapsedTime / 50;
+    mesh.mercury.normal.rotation.z = elapsedTime / 50;
 
-    marsMesh.rotation.z = elapsedTime / 100;
-    marsMesh.rotation.z = elapsedTime / 100;
+    mesh.venus.normal.rotation.x = elapsedTime / 100;
+    mesh.venus.normal.rotation.z = elapsedTime / 100;
 
-    stars.rotation.y = (mouseX * 100 + elapsedTime * 50) / 10000;
-    stars.rotation.x = (mouseY * 100 + elapsedTime) / 10000;
+    mesh.earth.normal.rotation.x = elapsedTime / 100;
+    mesh.earth.normal.rotation.z = elapsedTime / 100;
+
+    mesh.mars.normal.rotation.z = elapsedTime / 100;
+    mesh.mars.normal.rotation.z = elapsedTime / 100;
+
+    stars.rotation.y = (pointer.x * 100 + elapsedTime * 50) / 10000;
+    stars.rotation.x = (pointer.y * 100 + elapsedTime) / 10000;
 
     controls.update()
 
