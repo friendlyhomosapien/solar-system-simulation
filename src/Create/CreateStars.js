@@ -5,26 +5,24 @@ import {
     PointsMaterial
 } from "three";
 
-import DiscTexture from '@/Textures/DiscTexture.png';
+import DiscTexture from '@/Assets/Textures/DiscTexture.png';
 
 import createTexture from '@/Create/CreateTexture.js';
 
 export default class {
     constructor() {
         const geometry = new BufferGeometry();
-
         const vertices = [];
-    
+
         const sprite = createTexture(DiscTexture)
-    
+
         for ( let i = 0; i < 50000; i ++ ) {
-    
-            const x = 5000 * Math.random() - 1000;
-            const y = 5000 * Math.random() - 1000;
+
+            const x = 2000 * Math.random() - 1000;
+            const y = 2000 * Math.random() - 1000;
             const z = 5000 * Math.random() - 1000;
-    
+
             vertices.push( x, y, z );
-    
         }
     
         geometry.setAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );

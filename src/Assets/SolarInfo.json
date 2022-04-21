@@ -1,0 +1,133 @@
+[
+    {
+        "name": "sun",
+        "title": "The Sun our local star",
+        "link": "https://en.wikipedia.org/wiki/Sun",
+        "stats": [],
+        "description": [
+            "The sun is by far the largest object in our solar system, containing 99.8% of the solar system's mass. It sheds most of the heat and light that makes life possible on Earth and possibly elsewhere. Planets orbit the sun in oval-shaped paths called ellipses, with the sun slightly off-center of each ellipse.",
+            "NASA has a fleet of spacecraft observing the sun, such as the Parker Solar Probe, to learn more about its composition, and to make better predictions about solar activity and its effect on Earth."
+        ]
+    },
+    {
+        "name": "mercury",
+        "title": "Mercury: The closest planet to the sun",
+        "link": "https://en.wikipedia.org/wiki/Mercury_(planet)",
+        "stats": [
+            {
+                "name": "Discovery",
+                "value": "Known to the ancient Greeks and visible to the naked eye"
+            },
+            {
+                "name": "Named",
+                "value": "For the messenger of the Roman gods"
+            },
+            {
+                "name": "Diameter",
+                "value": "4.878 km"
+            },
+            {
+                "name": "Orbit",
+                "value": "88 Earth days"
+            },
+            {
+                "name": "Day",
+                "value": "58.6 Earth days"
+            }
+        ],
+        "description": [
+            "Mercury is the closest planet to the sun and the smallest planet in the solar system — it is only a little larger than Earth's moon. Mercury zips around the sun in only 88 days and because it is so close to our star (about two-fifths the distance between Earth and the sun).",
+            "Mercury experiences dramatic changes in its day and night temperatures. Mercury temperatures can reach a scorching 840 F (450 C) in the day, which is hot enough to melt lead. Meanwhile, on the night side, temperatures drop to minus 290 F (minus 180 C).",
+            "Mercury's atmosphere is very thin and primarily composed of oxygen, sodium, hydrogen, helium and potassium. Because the atmosphere is so thin it cannot incoming meteors, its surface is therefore pockmarked with craters, just like our moon.",
+            "Over its four-year mission, NASA's MESSENGER spacecraft revealed incredible discoveries that challenged astronomers' expectations. Among those findings was the discovery of water ice and frozen organic compounds at Mercury's north pole and that volcanism played a major role in shaping the planet's surface."
+        ]
+    },
+    {
+        "name": "venus",
+        "title": "Venus: Earth's twin in the solar system",
+        "link": "https://en.wikipedia.org/wiki/Venus",
+        "stats": [
+            {
+                "name": "Discovery",
+                "value": "Known to the ancient Greeks and visible to the naked eye"
+            },
+            {
+                "name": "Named",
+                "value": "For the Roman goddess of love and beauty"
+            },
+            {
+                "name": "Diameter",
+                "value": "12.104 km"
+            },
+            {
+                "name": "Orbit",
+                "value": "225 Earth days"
+            },
+            {
+                "name": "Day",
+                "value": "241 Earth days"
+            }
+        ],
+        "description": [
+            "Venus is the second planet from the sun and is the hottest planet in the solar system. Its thick atmosphere is extremely toxic and composed of sulfuric acid clouds, the planet is an extreme example of the greenhouse effect.",
+            "The average temperature on Venus' surface is 900 F (465 C). At 92 bar, the pressure at the surface would crush and kill you. And oddly, Venus spins slowly from east to west, the opposite direction of most of the other planets.",
+            "Venus is sometimes referred to as Earth's twin as they are similar in size and radar images beneath its atmosphere reveal numerous mountains and volcanoes. But beyond that, the planets could not be more different.",
+            "The Greeks believed Venus was two different objects — one in the morning sky and another in the evening. Because it is often brighter than any other object in the sky, Venus has generated many UFO reports."
+        ]
+    },
+    {
+        "name": "earth",
+        "title": "Earth: Our home planet, filled with life",
+        "link": "https://en.wikipedia.org/wiki/Earth",
+        "stats": [
+            {
+                "name": "Name",
+                "value": "Originates from \"Die Erde,\" the German word for \"the ground.\""
+            },
+            {
+                "name": "Diameter",
+                "value": "12.760 km"
+            },
+            {
+                "name": "Orbit",
+                "value": "365.24 days"
+            },
+            {
+                "name": "Day",
+                "value": "23 hours, 56 minutes"
+            }
+        ],
+        "description": [
+            "Earth, our home planet, is the third planet from the sun. It is a water world with two-thirds of the planet covered by water. Earth's atmosphere is rich in nitrogen and oxygen and it is the only world known to harbor life.",
+            "Earth rotates on its axis at 1,532 feet per second (467 meters per second) — slightly more than 1,000 mph (1,600 kph) — at the equator. The planet zips around the sun at more than 18 miles per second (29 km per second)."
+        ]
+    },
+    {
+        "name": "mars",
+        "title": "Mars: The solar system's Red Planet",
+        "link": "https://en.wikipedia.org/wiki/Mars",
+        "stats": [
+            {
+                "name": "Discovery",
+                "value": "Known to the ancient Greeks and visible to the naked eye"
+            },
+            {
+                "name": "Named",
+                "value": "For the Roman god of war"
+            },
+            {
+                "name": "Diameter",
+                "value": "6.787 km"
+            },
+            {
+                "name": "Day",
+                "value": "24 hours, 37 minutes"
+            }
+        ],
+        "description": [
+            "Mars is the fourth planet from the sun. It is a cold, desert-like planet covered in iron oxide dust that gives the planet its signature red hue. Mars shares similarities with Earth: It is rocky, has mountains, valleys and canyons, and storm systems ranging from localized tornado-like dust devils to planet-engulfing dust storms.",
+            "Substantial scientific evidence suggests that Mars at one point billions of years ago was a much warmer, wetter world, rivers and maybe even oceans existed. Although Mars' atmosphere is too thin for liquid water to exist on the surface for any length of time, remnants of that wetter Mars still exist today. Sheets of water ice the size of California lie beneath Mars' surface, and at both poles are ice caps made in part of frozen water.",
+            "Scientists also think ancient Mars would have had the conditions to support life like bacteria and other microbes. Hope that signs of this past life — and the possibility of even current lifeforms — may exist on the Red Planet has driven numerous Mars missions and the Red Planet is now one of the most explored planets in the solar system."
+        ]
+    }
+]
