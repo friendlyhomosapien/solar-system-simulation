@@ -122,9 +122,9 @@ const meshGroup = {
 };
 
 
-mesh.sun.normal = new CreateSphere(1, 100, 100, .005)
+mesh.sun.normal = new CreateSphere(1, 100, 100)
     .createShaderMesh(SunTexture, SunCloudTexture);
-mesh.sun.select = new CreateSphere(1.005, 100, 100, .005)
+mesh.sun.select = new CreateSphere(1.005, 100, 100)
     .createPoints(.025);
 mesh.sun.select.visible = false;
 
@@ -146,7 +146,7 @@ meshGroup.mercury.add(mesh.mercury.select);
 
 mesh.venus.normal = new CreateSphere(diam.venus, 50, 50)
     .createMesh(VenusSurfaceTexture);
-mesh.venus.select = new CreateSphere(diam.venus, 20, 20)
+mesh.venus.select = new CreateSphere(diam.venus + .005, 20, 20)
     .createPoints(0.01);
 mesh.venus.select.visible = false;
 
@@ -155,9 +155,9 @@ meshGroup.venus.add(mesh.venus.normal);
 meshGroup.venus.add(mesh.venus.select);
 
 
-mesh.earth.normal = new CreateSphere(.1, 50, 50)
+mesh.earth.normal = new CreateSphere(diam.earth, 50, 50)
     .createMesh(EarthDayTexture);
-mesh.earth.select = new CreateSphere(.1005, 20, 20)
+mesh.earth.select = new CreateSphere(diam.earth + .005, 20, 20)
     .createPoints(0.01);
 mesh.earth.select.visible = false;
 
@@ -166,9 +166,9 @@ meshGroup.earth.add(mesh.earth.normal);
 meshGroup.earth.add(mesh.earth.select);
 
 
-mesh.mars.normal = new CreateSphere(.08, 20, 20)
+mesh.mars.normal = new CreateSphere(diam.mars, 20, 20)
     .createMesh(MarsTexture);
-mesh.mars.select = new CreateSphere(.0805, 20, 20)
+mesh.mars.select = new CreateSphere(diam.mars + .005, 20, 20)
     .createPoints(0.01);
 mesh.mars.select.visible = false;
 
@@ -400,7 +400,7 @@ function introAnimation() {
 
 function orbitCalc(time, radius, speed = 1) {
     return {
-        y: (Math.cos(speed * (time / 60) * Math.PI * 2) * radius),
+        y: (Math.cos(speed * (time / 60) * Math.PI * 2) * radius) / 10,
         z: (Math.cos(speed * (time / 60) * Math.PI * 2) * radius),
         x: (Math.sin(speed * (time / 60) * Math.PI * 2) * radius),
     };
@@ -409,7 +409,7 @@ function orbitCalc(time, radius, speed = 1) {
 function orbitObj(obj, orbitCalc) {
     obj.position.x = orbitCalc.x;
     obj.position.y = orbitCalc.y;
-    // obj.position.z = orbitCalc.z;
+    obj.position.z = orbitCalc.z;
 }
 
 const clock = new THREE.Clock()
@@ -418,7 +418,7 @@ stars.rotation.y = (pointer.x + clock.getElapsedTime()) / 1000;
 stars.rotation.x = (pointer.y + clock.getElapsedTime()) / 1000;
 function animate() {
     const delta = 5 * clock.getDelta();
-    const elapsedTime = clock.getElapsedTime()
+    const elapsedTime = clock.getElapsedTime();
 
     mesh.sun.normal.rotation.y = .05 * elapsedTime
     mesh.sun.select.rotation.x = .05 * elapsedTime
