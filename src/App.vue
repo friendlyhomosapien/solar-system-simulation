@@ -1,78 +1,47 @@
 <template>
-    <Teleport
-        to="body"
-    >
-        <button
-            type="button"
-            class="absolute top-8 right-8 text-gray-100"
-            @click="toggleDialog"
-        >
-            <InformationCircleIcon
-                class="w-12 h-12 text-current"
-            />
-        </button>
+    <InfoDialogue v-if="showInfoDialogue" data-modal @close="toggleInfoDialogue" />
 
-        <dialog
-            ref="infoDialog"
-            class="p-8 bg-gray-800 text-gray-100 rounded border-2 border-gray-100
-                w-full md::w-3/4 lg:w-1/2 2xl:w-1/3 mt-12"
-        >
-            <div
-                class="flex flex-col sm:flex-row justify-between
-                    items-start sm:items-center gap-y-6 pb-4 border-b-2 border-gray-100"
+    <div class="grid grid-cols-3 mt-12 px-4">
+        <div class="col-start-2">
+            <GlitchEffect class="text-4xl tracking-widest">
+                SOLAR
+            </GlitchEffect>
+        </div>
+        <div class="flex flex-col items-end gap-y-4 pointer-events-auto">
+            <button
+                type="button"
+                class="text-gray-100"
+                @click="toggleInfoDialogue"
             >
-                <GlitchEffect class="text-4xl tracking-widest">
-                    SOLAR
-                </GlitchEffect>
-                <span class="flex items-center gap-x-4">
-                    <button
-                        id="toggle-camera-control"
-                        type="button"
-                        class="bg-black text-gray-100 rounded px-4 py-2"
-                    >
-                        camera control
-                    </button>
-                    <button
-                        id="toggle-orbit-animate"
-                        type="button"
-                        class="bg-black text-gray-100 rounded px-4 py-2"
-                    >
-                        orbit toggle
-                    </button>
-                    <button @click="toggleDialog" type="button">
-                        <XIcon
-                            class="h-6 w-6 text-gray-100"
-                        />
-                    </button>
-                </span>
+                <InformationCircleIcon
+                    class="w-12 h-12 text-current"
+                />
+            </button>
+            <div
+                class="flex flex-col items-end gap-y-3"
+            >
+                <button
+                    id="toggle-camera-control"
+                    type="button"
+                    class="toggle-button"
+                >
+                    camera control
+                </button>
+                <button
+                    id="toggle-orbit-animate"
+                    type="button"
+                    class="toggle-button toggle-button--active"
+                >
+                    orbit toggle
+                </button>
             </div>
-            <div class="space-y-2 mt-6">
-                <p>Thankyou for visiting my solar simulation project!</p>
-                <p>
-                    By clicking on a planet or the sun information about the object will be shown on screen.
-                    It's also possible to navigate between planets by using the arrows shown in the information modal
-                </p>
-                <p>
-                    The planets have been scaled relative to earth.
-                    They are not scaled relative to the sun because it would make them too small to see.
-                </p>
-                <p>You can stop the planets from orbitting by clicking on 'orbit toggle'.</p>
-                <p>To enable camera control over the camera's position click 'camera control'</p>
-            </div>
-        </dialog>
-    </Teleport>
+        </div>
+    </div>
+
     <div
         id="modal"
         ref="modal"
     >
-        <nav class="flex justify-between text-gray-100 ltr">
-            <button id="prev-planet" type="button" class="p-4">
-                <ChevronLeftIcon class="w-7 h-7 text-current" />
-            </button>
-            <button id="next-planet" type="button" class="p-4">
-                <ChevronRightIcon class="w-7 h-7 text-current" />
-            </button>
-        </nav>
         <div
             v-for="(item, index) in infoItems"
             :key="index"
@@ -123,9 +92,19 @@
             </div>
         </div>
     </div>
+
+    <nav class="fixed bottom-0 w-full flex justify-center text-gray-100 gap-x-20">
+        <button id="prev-planet" type="button" class="p-4 z-10 pointer-events-auto">
+            <ChevronLeftIcon class="w-7 h-7 text-current" />
+        </button>
+        <button id="next-planet" type="button" class="p-4 z-10 pointer-events-auto">
+            <ChevronRightIcon class="w-7 h-7 text-current" />
+        </button>
+    </nav>
 </template>
 <script>
 import GlitchEffect from '!/GlitchEffect/GlitchEffect.vue';
+import InfoDialogue from '!/InfoDialogue/InfoDialogue.vue';
 
 import {
     XIcon,
@@ -145,18 +124,22 @@ export default {
         ChevronLeftIcon,
         ChevronRightIcon,
         InformationCircleIcon,
-        GlitchEffect
+        GlitchEffect,
+        InfoDialogue
     },
+
     data() {
         return {
             infoItems,
             selected: null,
-            projectInfoDialog: false
+            showInfoDialogue: false
         }
     },
+
     mounted() {
         document.addEventListener('click', this.updateSelected);
     },
+
     methods: {
         updateSelected() {
             if (this.$refs?.modal?.getAttribute('data-info-panel')) {
@@ -165,19 +148,24 @@ export default {
                 this.selected = null;
             }
         },
-        toggleDialog() {
-            this.projectInfoDialog = !this.projectInfoDialog;
-            const checkClickOutside = (e) => {
-                if (e.target === this.$refs.infoDialog) {
-                    this.$refs.infoDialog.close();
-                }
+
+        toggleInfoDialogue() {
+            this.showInfoDialogue = !this.showInfoDialogue;
+
+            if (this.showInfoDialogue) {
+                setTimeout(() => {
+                    document.addEventListener('click', this.checkClick)
+                }, 100)
+            } else {
+                setTimeout(() => {
+                    document.removeEventListener('click', this.checkClick);
+                }, 100);
             }
-            if (!this.$refs.infoDialog.open) {
-                this.$refs.infoDialog.showModal()
-                window.addEventListener('click', checkClickOutside);
-            } else if (this.$refs.infoDialog.open) {
-                this.$refs.infoDialog.close();
-                window.addEventListener('click', checkClickOutside);
+        },
+
+        checkClick(e) {
+            if (e.target.closest("[data-modal]") === null) {
+                this.toggleInfoDialogue();
             }
         }
     }
@@ -186,18 +174,10 @@ export default {
 
 <style lang="postcss">
 #modal {
-    @apply hidden fixed left-0 max-h-screen w-screen overflow-y-auto
-        sm:w-2/3 lg:w-1/2 2xl:w-1/3 p-8 text-gray-100;
+    @apply hidden fixed left-0 top-24 bottom-20 max-h-screen w-screen overflow-y-auto
+        sm:w-2/3 lg:w-1/2 2xl:w-1/3 p-4 text-gray-100 z-10;
     direction: rtl;
     pointer-events: auto;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-#modal::-webkit-scrollbar {
-  display: none;
-}
-#modal nav {
-    direction: ltr;
 }
 
 #modal[data-info-panel] {
@@ -207,5 +187,13 @@ export default {
 .info-panel {
     @apply hidden bg-gray-800 bg-opacity-75 p-8 border rounded border-gray-100;
     direction: ltr;
+}
+
+button.toggle-button {
+    @apply bg-black text-white ring-2 ring-gray-400 rounded px-4 py-2 w-44;
+}
+
+button.toggle-button--active {
+    @apply ring-2 ring-red-500;
 }
 </style>

@@ -276,6 +276,8 @@ function init() {
     };
 
     const navNext = () => {
+        if (selectedMesh === null) selectedMesh = 'venus';
+
         const indexOf = meshOrder.indexOf(selectedMesh);
         mesh[selectedMesh].select.visible = false;
         if (indexOf !== meshOrder.length - 1) {
@@ -285,7 +287,10 @@ function init() {
         }
         setSelectedMesh(selectedMesh);
     };
+
     const navPrev = () => {
+        if (selectedMesh === null) selectedMesh = 'mars';
+
         const indexOf = meshOrder.indexOf(selectedMesh);
         mesh[selectedMesh].select.visible = false;
         if (indexOf > 0) {
@@ -326,8 +331,10 @@ function init() {
         toggleCameraControlBtn.addEventListener('click', () => {
             toggleCameraControl = !toggleCameraControl;
             if (toggleCameraControl) {
+                toggleCameraControlBtn.classList.add('toggle-button--active');
                 controls.enabled = true;
             } else {
+                toggleCameraControlBtn.classList.remove('toggle-button--active');
                 controls.enabled = false;
             }
         })
@@ -336,6 +343,12 @@ function init() {
     if (toggleOrbitAnimateBtn) {
         toggleOrbitAnimateBtn.addEventListener('click', () => {
             toggleOrbitAnimate = !toggleOrbitAnimate;
+
+            if (toggleOrbitAnimate) {
+                toggleOrbitAnimateBtn.classList.add('toggle-button--active');
+            } else {
+                toggleOrbitAnimateBtn.classList.remove('toggle-button--active');
+            }
         })
     }
 }

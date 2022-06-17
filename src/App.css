@@ -2,12 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  button, [type="button"], [type="reset"], [type="submit"] {
+    background-color: unset;
+  } 
+}
+
 #app {
   position: relative;
   z-index: 10;
-
-  height: 100vh;
-  width: 100vw;
 
   pointer-events: none;
 }
